@@ -1,7 +1,7 @@
 package OpenTelemetry::Instrumentation::caller;
 # ABSTRACT: OpenTelemetry instrumentation for the current namespace
 
-our $VERSION = '0.033';
+our $VERSION = '0.034';
 
 use v5.38;
 
