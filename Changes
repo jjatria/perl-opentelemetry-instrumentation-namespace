@@ -2,4 +2,6 @@ Revision history for OpenTelemetry-Instrumentation-namespace
 
 {{$NEXT}}
 
+0.032     2025-11-20 22:43:25 GMT
+
     Released as a separate distribution from OpenTelemetry
