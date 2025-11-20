@@ -78,6 +78,11 @@
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/jjatria/perl-opentelemetry-instrumentation-namespace/issues"
+      },
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/jjatria/perl-opentelemetry-instrumentation-namespace.git",
+         "web" : "https://github.com/jjatria/perl-opentelemetry-instrumentation-namespace"
       }
    },
    "version" : "0.033",
