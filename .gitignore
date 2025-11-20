@@ -1,0 +1,4 @@
+*.swp
+cover*/
+.build/
+OpenTelemetry-Instrumentation-namespace*
