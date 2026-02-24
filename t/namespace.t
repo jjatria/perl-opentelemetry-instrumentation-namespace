@@ -160,4 +160,53 @@ describe 'Config from file' => sub {
     };
 };
 
+describe 'Config from env' => sub {
+    require Local::File;
+
+    local $ENV{OTEL_PERL_INSTRUMENTATION_NAMESPACE_FILE_PATH}
+        = 't/share/namespace.yaml';
+
+    my $logs = messages {
+        CLASS->install();
+    };
+
+    is [ sort { $a->[-1] cmp $b->[-1] } grep { $_->[0] ne 'trace' } @$logs ] => [
+        [
+            info => 'OpenTelemetry',
+            'Adding OpenTelemetry auto-instrumentation for Local::File::die',
+        ],
+        [
+            info => 'OpenTelemetry',
+            'Adding OpenTelemetry auto-instrumentation for Local::File::do',
+        ],
+    ], 'Logged info about auto-instrumentation from env config at install time';
+
+    before_each Reset => sub { delete $span->{otel} };
+
+    tests 'Loaded from env config' => sub {
+        ok Local::File::do(), 'Before returns as expected';
+        is $span->{otel}, {
+            ended  => T,
+            name   => 'Local::File::do',
+            parent => D,
+            status => { code => SPAN_STATUS_OK },
+        }, 'Captured module loaded before install using env config';
+    };
+};
+
+describe 'Env config precedence over -from_file' => sub {
+    require Local::File;
+
+    local $ENV{OTEL_PERL_INSTRUMENTATION_NAMESPACE_FILE_PATH}
+        = 't/share/namespace-env-block.yaml';
+
+    my $logs = messages {
+        CLASS->install(
+            -from_file => 't/share/namespace.yaml',
+        );
+    };
+
+    is [ grep { $_->[0] eq 'info' } @$logs ] => [], 'Env config can disable packages before -from_file rules';
+};
+
 done_testing;
