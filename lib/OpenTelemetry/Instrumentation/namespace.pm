@@ -82,11 +82,14 @@ sub parse_options ( $class, @config ) {
         $options{ $_->[0] } = $_->[1];
     }
 
-    if ( my $path = delete $options{-from_file} ) {
+    my @env_rules;
+    if ( my $env_path = $ENV{OTEL_PERL_INSTRUMENTATION_NAMESPACE_FILE_PATH} ) {
         try {
-            $LOGGER->trace("Loading OpenTelemetry namespace configuration from $path");
-            my $loaded = YAML::PP::LoadFile($path);
-            @rules = ( is_hashref($loaded) ? %$loaded : @$loaded, @rules );
+            $LOGGER->trace(
+                "Loading OpenTelemetry namespace configuration from OTEL_PERL_INSTRUMENTATION_NAMESPACE_FILE_PATH=$env_path"
+            );
+            my $loaded = YAML::PP::LoadFile($env_path);
+            @env_rules = is_hashref($loaded) ? %$loaded : @$loaded;
         }
         catch ($e) {
             $LOGGER->warn(
@@ -94,6 +97,22 @@ sub parse_options ( $class, @config ) {
             );
         }
     }
+
+    my @file_rules;
+    if ( my $path = delete $options{-from_file} ) {
+        try {
+            $LOGGER->trace("Loading OpenTelemetry namespace configuration from $path");
+            my $loaded = YAML::PP::LoadFile($path);
+            @file_rules = is_hashref($loaded) ? %$loaded : @$loaded;
+        }
+        catch ($e) {
+            $LOGGER->warn(
+                "Could not load configuration for OpenTelemetry namespace instrumentation: $e"
+            );
+        }
+    }
+
+    @rules = ( @env_rules, @file_rules, @rules );
 
     return ( \@rules, \%options );
 }
