@@ -2,6 +2,8 @@ Revision history for OpenTelemetry-Instrumentation-namespace
 
 {{$NEXT}}
 
+0.034     2026-04-01 22:27:12 BST
+
     * Make sure 'install' in the 'caller' instrumentation returns
       a true value.
 
