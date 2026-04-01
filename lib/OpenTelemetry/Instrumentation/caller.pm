@@ -14,6 +14,8 @@ sub install {
     $rules = [ qr/.*/ => 1 ] unless @$rules;
 
     $class->wrap_subroutines( scalar caller(2), $rules, $options );
+
+    return !!1;
 }
 
 1;

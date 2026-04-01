@@ -2,6 +2,9 @@ Revision history for OpenTelemetry-Instrumentation-namespace
 
 {{$NEXT}}
 
+    * Make sure 'install' in the 'caller' instrumentation returns
+      a true value.
+
 0.033     2025-11-20 22:50:11 GMT
 
     * Add repository information to META
